@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {getClients} from '../api/clientsApi';
 
 /**
@@ -13,9 +13,10 @@ export const useClients = (filters = {}) => {
     const [error, setError] = useState(null); // estado de erro
 
     /**
-    * Função para carregar clientes da API
+    * useCallback memoriza a função para não ser recriada em cada render.
+    * Isso é importante para evitar loops infinitos no useEffect que depende dessa função.
     */
-    const fetchClients = async () => {
+    const fetchClients = useCallback(async () => {
         setLoading(true);
         setError(null);
 
@@ -26,23 +27,16 @@ export const useClients = (filters = {}) => {
             setError(err.response?.data?.detail || 'Erro ao carregar clientes');
             console.error('Erro ao carregar clientes:', err);
         }
-    };
+    }, [JSON.stringify(filters)]); // Dependência: filtros (convertidos para string para comparação)
 
     // Carrega clientes quando o componente é montado ou quando os filtros mudam
     useEffect(() => {
         fetchClients();
-    }, [JSON.stringify(filters)]); // Converte para String para comparação
-
-    /**
-     * Função para recarregar clientes manualmente
-     */
-    const refetch = () => {
-        fetchClients();
-    };
+    }, [fetchClients]); // Dependência: função memoizada
 
     return { 
         clients, //Lista de clientes 
         loading, //true enquanto carrega
         error, //mensagem de erro
-        refetch }; //função para recarregar clientes
+        refetch: fetchClients }; //função para recarregar clientes
 };

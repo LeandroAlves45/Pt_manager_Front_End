@@ -9,7 +9,7 @@ import api from "./axiosConfig";
  * @param {number} params.Status - 1=ativos, 2=arquivados (opcional)
  * @param {number} params.Page_size - Tamanho da página (opcional)
  * @param {number} params.Page_number - Número da página (opcional)
- * @returns {Promise} Lista de clientes
+ * @returns {Promise<Array>} Lista de clientes
  */
 export const getClients = async (params = {}) => {
     const response = await api.get('/api/v1/clients/clients', { params });
@@ -29,7 +29,7 @@ export const getClients = async (params = {}) => {
  * @param {string} clientData.notes - Notas (opcional)
  * @param {string} clientData.emergency_contact_name - Nome contacto emergência (opcional)
  * @param {string} clientData.emergency_contact_phone - Telefone contacto emergência (opcional)
- * @returns {Promise} Cliente criado
+ * @returns {Promise<Object>} Cliente criado
  */
 export const createClient = async (clientData) => {
     const response = await api.post('/api/v1/clients', clientData);
@@ -40,7 +40,7 @@ export const createClient = async (clientData) => {
  * * Atualiza um cliente existente
  * @param {string} clientId - ID do cliente a ser atualizado
  * @param {Object} clientData - Dados do cliente a serem atualizados (mesmos campos de createClient)
- * @returns {Promise} Cliente atualizado
+ * @returns {Promise<Object>} Cliente atualizado
  *  
  */
 
@@ -51,7 +51,7 @@ export const updateClient = async (clientId, clientData) => {
 
 /** * * Arquiva um cliente (soft delete)
  * @param {string} clientId - ID
- * @return {Promise} Cliente arquivado
+ * @return {Promise<Object>} Cliente arquivado
  */
 export const archiveClient = async (clientId) => {
     const response = await api.delete(`/api/v1/clients/${clientId}/archive`);
@@ -60,7 +60,7 @@ export const archiveClient = async (clientId) => {
 
 /** * * Restaura um cliente arquivado
  * @param {string} clientId - ID
-* @return {Promise} Cliente reativado */ 
+* @return {Promise<Object>} Cliente reativado */ 
 
 export const unarchiveClient = async (clientId) => {
     const response = await api.delete(`/api/v1/clients/${clientId}/unarchive`);
@@ -70,8 +70,8 @@ export const unarchiveClient = async (clientId) => {
 /**
  * Remove cliente
  * @param {string} clientId - ID do cliente a ser removido
- * @param {boolean} hard - false=arquivar, true=remover permanentemente
- * @returns {Promise} Cliente removido
+ * @param {boolean} [hard=false] - false=arquivar, true=remover permanentemente
+ * @returns {Promise<void>} Cliente removido
  */
 export const deleteClient = async (clientId, hard = false) => {
     const response = await api.delete(`/api/v1/clients/${clientId}`, { params: { hard } });
