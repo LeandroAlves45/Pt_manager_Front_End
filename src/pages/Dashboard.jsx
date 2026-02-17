@@ -1,7 +1,8 @@
-import { useClients } from '@/hooks/useClients';
-import { useSessions } from '@/hooks/useSessions';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
 import StatsCards from '@/components/dashboard/StatsCards';
 import WeeklyChart from '@/components/dashboard/WeeklyChart';
+import AlertsPanel from '@/components/dashboard/AlertsPanel';
+import ClientsAtRisk from '@/components/dashboard/ClientsAtRisk';
 import UpcomingSessions from '@/components/dashboard/UpcomingSessions';
 
 /**
@@ -15,37 +16,10 @@ import UpcomingSessions from '@/components/dashboard/UpcomingSessions';
  */
 
 export default function Dashboard() {
-  //Busca clientes ativos
-  const { clients, loading: clientsLoading } = useClients({ status: 1 });
-  //Busca todas as sessões
-  const { sessions, loading: sessionsLoading } = useSessions({ limit: 200 });
-
-  //Calcula estatísticas para os cards
-  const totalClients = clients.length;
-
-  //sessões agendadas para hoje
-  const today = new Date().toISOString().split('T')[0];
-  const sessionsToday = sessions.filter((s) => {
-    return s.status === 'scheduled' && s.starts_at?.startsWith(today);
-  }).length;
-
-  //Clientes com pack ativo
-  const activePacks = clients.filter((c) => c.active_pack !== null).length;
-
-  //Total de sessões agendadas
-  const currentMonth = new Date().getMonth();
-  const currentYear = new Date().getFullYear();
-  const totalSessionsThisMouth = sessions.filter((s) => {
-    const d = new Date(s.starts_at);
-    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-  }).length;
-
-  //loading state global
-  const loading = clientsLoading || sessionsLoading;
+  const stats = useDashboardStats();
 
   return (
     <div className="p-4 lg:p-6 flex flex-col gap-6">
-      {/* Header da página */}
       <div>
         <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -53,33 +27,23 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {loading ? (
-        //Skeleton de loading simples
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="h-24 rounded-xl bg-card border border-border animate-pulse"
-            />
-          ))}
-        </div>
-      ) : (
-        <>
-          {/* Cards de estatísticas */}
-          <StatsCards
-            totalClients={totalClients}
-            sessionsToday={sessionsToday}
-            activePacks={activePacks}
-            totalSessionsThisMouth={totalSessionsThisMouth}
-          />
+      {/* Cards de Estatísticas */}
+      <StatsCards stats={stats} />
 
-          {/* Grid: gráfico à esquerda, próximas sessões à direita */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <WeeklyChart sessions={sessions} />
-            <UpcomingSessions sessions={sessions} />
-          </div>
-        </>
-      )}
+      {/* Gráficos e Alertas */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <WeeklyChart sessions={stats.weekSessions} />
+        <AlertsPanel
+          clientsAtRisk={stats.clientsAtRisk}
+          upcomingSessions={stats.upcomingSessions}
+        />
+      </div>
+
+      {/* Clientes em Risco e Próximas Sessões */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ClientsAtRisk clients={stats.clientsAtRisk} />
+        <UpcomingSessions sessions={stats.upcomingSessions} />
+      </div>
     </div>
   );
 }

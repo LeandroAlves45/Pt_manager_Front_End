@@ -6,6 +6,7 @@ import ClientDetails from './pages/ClientDetails';
 import Sessions from './pages/Sessions';
 import Packs from './pages/Packs';
 import Exercises from './pages/Exercises';
+import TrainingPlans from './pages/TrainingPlans';
 
 //Componente raiz da aplicação.
 
@@ -33,6 +34,9 @@ function App() {
 
           {/* Gestão de exercícios */}
           <Route path="/exercicios" element={<Exercises />} />
+
+          {/* Gestão de planos de treino */}
+          <Route path="/planos-de-treino" element={<TrainingPlans />} />
         </Routes>
       </main>
     </div>

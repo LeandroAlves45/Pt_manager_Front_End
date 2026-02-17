@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTrainingPlans } from '@/api/trainingPlanApi';
-import { set } from 'react-hook-form';
+import { getTrainingPlans } from '@/api/trainingPlan';
 
 export const useTrainingPlans = (filters = {}) => {
   const [plans, setPlans] = useState([]);

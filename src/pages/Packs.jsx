@@ -36,7 +36,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert_dialog';
+} from '@/components/ui/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -309,19 +309,20 @@ export default function Packs() {
         open={!!deleteConfirm}
         onOpenChange={(open) => !open && setDeleteConfirm(null)}
       >
-        <AlertDialogContent className="bg-card border-border">
+        <AlertDialogContent className="bg-card border-border text-foreground">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">
+            <AlertDialogTitle className="text-lg font-semibold">
               Eliminar Tipo de Pack
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
-              Tem a certeza que deseja eliminar o pack &quot;
-              {deleteConfirm?.name}&quot;? Esta ação não pode ser desfeita.
+              Tem a certeza que deseja eliminar o pack? Esta ação não pode ser
+              desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-border text-foreground hover:bg-accent">
-              Voltar
+
+          <AlertDialogFooter className="flex justify-end gap-3 pt-4">
+            <AlertDialogCancel className="border-border text-foreground">
+              Cancelar
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}

@@ -44,14 +44,21 @@ export const useDashboardStats = () => {
       return false;
     }),
 
+    //Próximas sessões - usadas em UpcomingSessions e AlertsPanel
+    upcomingSessions: sessions
+      .filter(
+        (s) => s.status === 'scheduled' && new Date(s.starts_at) > new Date()
+      )
+      .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at)),
+
     //Sessões da semana
     weekSessions: sessions.filter((s) => {
-      const today = new Date();
-      const weekStart = new Date(
-        today.setDate(today.getDate() - today.getDay())
-      ); // Domingo
+      const now = new Date();
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay()); //recua até domingo
+      weekStart.setHours(0, 0, 0, 0); // Início do dia
       const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekEnd.getDate() + 7);
+      weekEnd.setDate(weekStart.getDate() + 7);
       const sessionDate = new Date(s.starts_at);
       return sessionDate >= weekStart && sessionDate < weekEnd;
     }),

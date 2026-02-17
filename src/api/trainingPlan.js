@@ -5,30 +5,12 @@ import api from './axiosConfig';
 // ============================================================================
 
 /**
- * * Lista todos os planos de treino com filtros opcionais.
- *
- * @param {Object} params - Parâmetros de filtro (opcionais)
- * @param {string} [params.Client_id] - Filtrar por cliente específico
- * @param {string} [params.Status] - Filtrar por status (draft, published, archived)
- * @param {number} [params.Page_size] - Tamanho da página
- * @param {number} [params.Page_number] - Número da página
- *
- * @returns {Promise<Array>} Lista de planos
+ * Lista todos os planos de treino.
+ * O backend aceita filtros por query string: Client_id, Status, Page_size, Page_number
  */
 
 export const getTrainingPlans = async (params = {}) => {
   const response = await api.get('/api/v1/training_plans/', { params });
-  return response.data;
-};
-
-/**
- * * Busca um plano de treino específico por ID.
- *
- * @param {string} planId - ID do plano
- * @returns {Promise<Object>} Detalhes do plano
- */
-export const getTrainingPlanById = async (planId) => {
-  const response = await api.get(`/api/v1/training_plans/${planId}/`);
   return response.data;
 };
 
@@ -72,7 +54,7 @@ export const updateTrainingPlan = async (planId, data) => {
  */
 
 export const deleteTrainingPlan = async (planId) => {
-  await api.delete(`/api/v1/training_plans/${planId}/`);
+  await api.delete(`/api/v1/training_plans/${planId}`);
 };
 
 // ============================================================================
@@ -87,7 +69,7 @@ export const deleteTrainingPlan = async (planId) => {
  */
 
 export const getPlanDays = async (planId) => {
-  const response = await api.get(`/api/v1/training_plans/${planId}/days/`);
+  const response = await api.get(`/api/v1/training_plans/${planId}/days`);
   return response.data;
 };
 
@@ -105,7 +87,7 @@ export const getPlanDays = async (planId) => {
 
 export const createPlanDay = async (planId, data) => {
   const response = await api.post(
-    `/api/v1/training_plans/${planId}/days/`,
+    `/api/v1/training_plans/${planId}/days`,
     data
   );
   return response.data;
@@ -114,30 +96,25 @@ export const createPlanDay = async (planId, data) => {
 /**
  * Atualiza um dia do plano.
  *
- * @param {string} planId - ID do plano
  * @param {string} dayId - ID do dia
  * @param {Object} data - Dados a atualizar
  * @returns {Promise<Object>} Dia atualizado
  */
 
-export const updatePlanDay = async (planId, dayId, data) => {
-  const response = await api.put(
-    `/api/v1/training_plans/${planId}/days/${dayId}/`,
-    data
-  );
+export const updatePlanDay = async (dayId, data) => {
+  const response = await api.put(`/api/v1/training_plans/days/${dayId}`, data);
   return response.data;
 };
 
 /**
  * Remove um dia do plano.
  *
- * @param {string} planId - ID do plano
  * @param {string} dayId - ID do dia
  * @returns {Promise<void>}
  */
 
-export const deletePlanDay = async (planId, dayId) => {
-  await api.delete(`/api/v1/training_plans/${planId}/days/${dayId}/`);
+export const deletePlanDay = async (dayId) => {
+  await api.delete(`/api/v1/training_plans/days/${dayId}`);
 };
 
 // ============================================================================
@@ -152,9 +129,9 @@ export const deletePlanDay = async (planId, dayId) => {
  * @returns {Promise<Array>} Lista de exercícios
  */
 
-export const getDayExercises = async (planId, dayId) => {
+export const getDayExercises = async (dayId) => {
   const response = await api.get(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/`
+    `/api/v1/training_plans/days/${dayId}/exercises`
   );
   return response.data;
 };
@@ -162,7 +139,6 @@ export const getDayExercises = async (planId, dayId) => {
 /**
  * Adiciona exercício a um dia.
  *
- * @param {string} planId - ID do plano
  * @param {string} dayId - ID do dia
  * @param {Object} data - Dados do exercício
  * @param {string} data.exercise_id - ID do exercício
@@ -176,9 +152,9 @@ export const getDayExercises = async (planId, dayId) => {
  *
  * @returns {Promise<Object>} Exercício adicionado
  */
-export const addExerciseToDay = async (planId, dayId, data) => {
+export const addExerciseToDay = async (dayId, data) => {
   const response = await api.post(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/`,
+    `/api/v1/training_plans/days/${dayId}/exercises`,
     data
   );
   return response.data;
@@ -187,16 +163,15 @@ export const addExerciseToDay = async (planId, dayId, data) => {
 /**
  * Atualiza exercício de um dia.
  *
- * @param {string} planId - ID do plano
  * @param {string} dayId - ID do dia
  * @param {string} exerciseId - ID do exercício no dia
  * @param {Object} data - Dados a atualizar
  * @returns {Promise<Object>} Exercício atualizado
  */
 
-export const updateDayExercise = async (planId, dayId, exerciseId, data) => {
+export const updateDayExercise = async (dayExerciseId, data) => {
   const response = await api.put(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/${exerciseId}/`,
+    `/api/v1/training_plans/days/exercises/${dayExerciseId}`,
     data
   );
   return response.data;
@@ -205,16 +180,12 @@ export const updateDayExercise = async (planId, dayId, exerciseId, data) => {
 /**
  * Remove exercício de um dia.
  *
- * @param {string} planId - ID do plano
- * @param {string} dayId - ID do dia
- * @param {string} exerciseId - ID do exercício no dia
+ * @param {string} dayExerciseId - ID do exercício no dia
  * @returns {Promise<void>}
  */
 
-export const deleteDayExercise = async (planId, dayId, exerciseId) => {
-  await api.delete(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/${exerciseId}/`
-  );
+export const deleteDayExercise = async (dayExerciseId) => {
+  await api.delete(`/api/v1/training_plans/days/exercises/${dayExerciseId}`);
 };
 
 // ============================================================================
@@ -224,15 +195,13 @@ export const deleteDayExercise = async (planId, dayId, exerciseId) => {
 /**
  * Lista cargas de todas as séries de um exercício.
  *
- * @param {string} planId - ID do plano
- * @param {string} dayId - ID do dia
- * @param {string} exerciseId - ID do exercício no dia
+ * @param {string} dayExerciseId - ID do exercício no dia
  * @returns {Promise<Array>} Lista de cargas por série
  */
 
-export const getExerciseSetLoads = async (planId, dayId, exerciseId) => {
+export const getExerciseSetLoads = async (dayExerciseId) => {
   const response = await api.get(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/${exerciseId}/loads/`
+    `/api/v1/training_plans/days/exercises/${dayExerciseId}/loads`
   );
   return response.data;
 };
@@ -240,7 +209,7 @@ export const getExerciseSetLoads = async (planId, dayId, exerciseId) => {
 /**
  * Define carga para uma série específica.
  *
- * @param {string} planId - ID do plano
+ * @param {string} dayExerciseId - ID do exercício no dia
  * @param {string} dayId - ID do dia
  * @param {string} exerciseId - ID do exercício no dia
  * @param {Object} data - Dados da carga
@@ -250,9 +219,9 @@ export const getExerciseSetLoads = async (planId, dayId, exerciseId) => {
  *
  * @returns {Promise<Object>} Carga criada/atualizada
  */
-export const setExerciseSetLoad = async (planId, dayId, exerciseId, data) => {
+export const setExerciseSetLoad = async (dayExerciseId, data) => {
   const response = await api.post(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/${exerciseId}/loads/`,
+    `/api/v1/training_plans/days/exercises/${dayExerciseId}/loads`,
     data
   );
   return response.data;
@@ -261,23 +230,15 @@ export const setExerciseSetLoad = async (planId, dayId, exerciseId, data) => {
 /**
  * Atualiza carga de uma série.
  *
- * @param {string} planId - ID do plano
- * @param {string} dayId - ID do dia
- * @param {string} exerciseId - ID do exercício no dia
+ * @param {string} dayExerciseId - ID do exercício no dia
  * @param {string} loadId - ID da carga
  * @param {Object} data - Dados a atualizar
  * @returns {Promise<Object>} Carga atualizada
  */
 
-export const updateExerciseSetLoad = async (
-  planId,
-  dayId,
-  exerciseId,
-  loadId,
-  data
-) => {
+export const updateExerciseSetLoad = async (setLoadId, data) => {
   const response = await api.put(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/${exerciseId}/loads/${loadId}/`,
+    `/api/v1/training_plans/days/exercises/loads/${setLoadId}`,
     data
   );
   return response.data;
@@ -286,22 +247,12 @@ export const updateExerciseSetLoad = async (
 /**
  * Remove carga de uma série.
  *
- * @param {string} planId - ID do plano
- * @param {string} dayId - ID do dia
- * @param {string} exerciseId - ID do exercício no dia
- * @param {string} loadId - ID da carga
+ * @param {string} setLoadId - ID da carga
  * @returns {Promise<void>}
  */
 
-export const deleteExerciseSetLoad = async (
-  planId,
-  dayId,
-  exerciseId,
-  loadId
-) => {
-  await api.delete(
-    `/api/v1/training_plans/${planId}/days/${dayId}/exercises/${exerciseId}/loads/${loadId}/`
-  );
+export const deleteExerciseSetLoad = async (setLoadId) => {
+  await api.delete(`/api/v1/training_plans/set-loads/${setLoadId}`);
 };
 
 // ============================================================================
@@ -317,7 +268,7 @@ export const deleteExerciseSetLoad = async (
 
 export const getClientActivePlan = async (clientId) => {
   const response = await api.get(
-    `/api/v1/training_plans/clients/${clientId}/active`
+    `/api/v1/training_plans/active-plan/${clientId}`
   );
   return response.data;
 };
@@ -333,10 +284,7 @@ export const getClientActivePlan = async (clientId) => {
  * @returns {Promise<Object>} Plano ativo criado
  */
 export const setClientActivePlan = async (data) => {
-  const response = await api.post(
-    '/api/v1/training_plans/clients/active',
-    data
-  );
+  const response = await api.post('/api/v1/training_plans/active-plan', data);
   return response.data;
 };
 

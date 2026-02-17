@@ -14,71 +14,70 @@ import { Card, CardContent } from '@/components/ui/card';
  * @param {number} totalSessions - Progresso médio do mês
  */
 
-export default function StatsCards({
-  totalClients = 0,
-  sessionsToday = 0,
-  activePacks = 0,
-  totalSessions = 0,
-}) {
-  //Array de objetos para facilitar renderização dos cartões
-  const stats = [
+export default function StatsCards({ stats }) {
+  const cards = [
     {
-      label: 'Clientes Ativos',
-      value: totalClients,
+      title: 'Clientes Ativos',
+      value: stats.activeClients,
+      total: stats.totalClients,
       icon: Users,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
     },
     {
-      label: 'Sessões Hoje',
-      value: sessionsToday,
+      title: 'Sessões Hoje',
+      value: stats.todaySessions,
       icon: CalendarDays,
-      color: 'text-success',
-      bgColor: 'bg-success/10',
+      color: 'text-green-500',
+      bgColor: 'bg-green-500/10',
     },
     {
-      label: 'Packs Ativos',
-      value: activePacks,
+      title: 'Packs Ativos',
+      value: stats.activePacks,
       icon: Package,
-      color: 'text-info',
-      bgColor: 'bg-info/10',
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
     },
     {
-      label: 'Sessões Mês',
-      value: totalSessions,
+      title: 'Sessões Mês',
+      value: stats.weekSessions.length,
       icon: TrendingUp,
-      color: 'text-warning',
-      bgColor: 'bg-warning/10',
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-500/10',
     },
   ];
 
   return (
-    //grid responsivo: 1 coluna mobile, 2 tablet, 4 desktop
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat) => (
-        <Card key={stat.label} className="bg-card border-border">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-1">
-                {/* Label do stat em text secundario */}
-                <span className="text-sm text-muted-foreground">
-                  {stat.label}
-                </span>
-                {/* Valor do stat em destaque */}
-                <span className="text-2xl font-semibold text-foreground">
-                  {stat.value}
-                </span>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card, index) => {
+        const Icon = card.icon;
+        return (
+          <Card key={index} className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {card.title}
+                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-2xl font-semibold text-foreground">
+                      {card.value}
+                    </h3>
+                    {card.total && (
+                      <span className="text-sm text-muted-foreground">
+                        / {card.total}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className={`p-3 rounded-lg ${card.bgColor}`}>
+                  <Icon className={`h-6 w-6 ${card.color}`} />
+                </div>
               </div>
-              {/* Icone com fundo colorido arredondado */}
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.bgColor}`}
-              >
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }

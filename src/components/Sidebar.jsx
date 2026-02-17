@@ -28,13 +28,12 @@ import logoImg from '@/assets/logo.png';
  */
 
 const navItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
   { label: 'Clientes', href: '/clientes', icon: Users },
   { label: 'Sessões', href: '/sessoes', icon: CalendarDays },
   { label: 'Packs', href: '/packs', icon: Package },
   { label: 'Exercícios', href: '/exercicios', icon: Activity },
   { label: 'Planos de treino', href: '/planos-de-treino', icon: Dumbbell },
-  ,
 ];
 
 //Nome do trainer (no futuro, isso deve vir do contexto de autenticação)

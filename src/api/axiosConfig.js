@@ -34,43 +34,40 @@ api.interceptors.request.use(
 
 //Interceptor para logs de respostas
 api.interceptors.response.use(
-  (response) => {
-    // Log de respostas bem-sucedidas
-    if (import.meta.env.MODE === 'development') {
-      console.log('✅ Resposta:', response.status, response.config.url);
-    }
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response) {
-      console.error(`❌ Erro ${error.response.status}:`, error.response.data);
+      const status = error.response.status;
+      const data = error.response.data;
 
-      switch (error.response.status) {
-        case 401:
-          console.error('Não autorizado - Verifique a API KEY');
-          break;
-        case 403:
-          console.error(
-            'Proibido - Você não tem permissão para acessar este recurso'
-          );
-          break;
-        case 404:
-          console.error('Não encontrado - O recurso solicitado não existe');
-          break;
-        case 500:
-          console.error(
-            'Erro interno do servidor - Tente novamente mais tarde'
-          );
-          break;
-        default:
-          console.error('Erro desconhecido:', error.response.data);
+      if (status === 422) {
+        // 422: Validação do Pydantic falhou
+        // O campo "detail" é um array com todos os erros de validação
+        console.error(`❌ Erro 422 - Validação falhou:`);
+
+        if (data.detail && Array.isArray(data.detail)) {
+          // Itera cada erro de validação e mostra separadamente
+          data.detail.forEach((err) => {
+            // loc: localização do erro (ex: ["body", "name"])
+            // msg: mensagem do erro
+            // type: tipo do erro Pydantic
+            console.error(
+              `  Campo: ${err.loc.join(' → ')} | Erro: ${err.msg} | Tipo: ${err.type}`
+            );
+          });
+        } else {
+          // Fallback para outros formatos de erro 422
+          console.error(JSON.stringify(data, null, 2));
+        }
+      } else if (status === 405) {
+        console.error(`❌ Erro 405:`, data);
+      } else if (status === 404) {
+        console.error(`❌ Erro 404:`, data);
+      } else {
+        console.error(`❌ Erro ${status}:`, data);
       }
-    } else if (error.request) {
-      // Requisição foi feita mas sem resposta
-      console.error('❌ Sem resposta do servidor:', error.request);
     } else {
-      // Erro na configuração da requisição
-      console.error('❌ Erro na configuração da requisição:', error.message);
+      console.error('Erro desconhecido:', error.message);
     }
 
     return Promise.reject(error);

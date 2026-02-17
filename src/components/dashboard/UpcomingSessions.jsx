@@ -2,8 +2,7 @@ import { CalendarDays, Clock, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { getInitials, formatDate, getStatusColor } from '@/lib/helpers';
-import e from 'cors';
+import { getInitials, formatDateTime, getStatusColor } from '@/lib/helpers';
 
 /**
  * Lista as próximas sessões do cliente

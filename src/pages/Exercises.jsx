@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import MuscleMultiSelect from '@/components/exercises/MuscleMultiSelect';
+import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import {
   getExercises,
@@ -35,6 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Plus, Edit, Search, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import ExerciseFormDialog from '@/components/exercises/ExerciseFormDialog';
 
 export default function Exercises() {
   const [exercises, setExercises] = useState([]);
@@ -50,6 +52,7 @@ export default function Exercises() {
     setValue,
     watch,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: { name: '', muscles: '', url: '', is_active: true },
@@ -323,18 +326,21 @@ export default function Exercises() {
               )}
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="ex-muscles">Músculos *</Label>
-              <Input
-                id="ex-muscles"
-                {...register('muscles', { required: 'Músculos obrigatórios' })}
-                className="bg-background border-input text-foreground"
-                placeholder="Ex: Peito, Tríceps"
+              <Label>
+                Músculos <span className="text-destructive">*</span>
+              </Label>
+              <Controller
+                name="muscles"
+                control={control}
+                rules={{ required: 'Seleciona pelo menos um músculo' }}
+                render={({ field }) => (
+                  <MuscleMultiSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.muscles?.message}
+                  />
+                )}
               />
-              {errors.muscles && (
-                <span className="text-xs text-destructive">
-                  {errors.muscles.message}
-                </span>
-              )}
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="ex-url">URL do Vídeo</Label>
