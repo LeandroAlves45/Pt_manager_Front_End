@@ -1,3 +1,13 @@
+/**
+ * main.jsx — ponto de entrada da aplicação React.
+ *
+ * Ordem dos providers (de fora para dentro):
+ *   BrowserRouter → necessário para o AuthContext usar useNavigate()
+ *   AuthProvider  → disponibiliza user, login, logout a toda a app
+ *   App           → define as rotas e os layouts
+ *   ToastContainer → renderiza os toasts (react-toastify) por cima de tudo
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -5,6 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 import App from './App.jsx';
+import { AuthProvider } from './context/AuthContext';
 
 /**
  * Entry point da aplicação.
@@ -23,19 +34,20 @@ import App from './App.jsx';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+      <AuthProvider>
+        <App />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

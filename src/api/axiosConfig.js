@@ -18,7 +18,7 @@ import axios from 'axios';
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   (import.meta.env.MODE === 'production'
-    ? 'https://ptmanagerbackend-production.up.railway.app' // Produção
+    ? 'https://pt-manager-back-end.onrender.com' // Produção
     : 'http://localhost:8000'); // Desenvolvimento local
 
 const API_KEY = import.meta.env.VITE_API_KEY;
