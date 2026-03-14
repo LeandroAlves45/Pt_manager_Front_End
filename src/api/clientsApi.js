@@ -1,3 +1,12 @@
+/**
+ * clientsApi.js — camada de acesso à API para gestão de clientes.
+ *
+ * Todas as funções recebem dados, chamam o Axios e devolvem response.data.
+ * Nunca fazem gestão de estado — isso é responsabilidade dos hooks (useClients).
+ * Nunca tratam erros de UI — o interceptor de resposta em axiosConfig.js
+ * trata os logs; o componente trata a mensagem ao utilizador via toast.
+ */
+
 import api from './axiosConfig';
 
 // == CLIENTES ==
@@ -21,14 +30,14 @@ export const getClients = async (params = {}) => {
  * @param {Object} clientData - Dados do cliente
  * @param {string} clientData.full_name - Nome completo (obrigatório)
  * @param {string} clientData.phone - Telefone (obrigatório, único)
- * @param {string} clientData.email - Email (opcional, único)
- * @param {string} clientData.birth_date - Data nascimento formato YYYY-MM-DD (opcional)
- * @param {string} clientData.sex - Sexo: 'M', 'F', 'Other' (opcional)
- * @param {number} clientData.height_cm - Altura em cm (opcional)
- * @param {string} clientData.objetive - Objetivo (opcional)
- * @param {string} clientData.notes - Notas (opcional)
- * @param {string} clientData.emergency_contact_name - Nome contacto emergência (opcional)
- * @param {string} clientData.emergency_contact_phone - Telefone contacto emergência (opcional)
+ * @param {string} [clientData.email] - Email (opcional, único)
+ * @param {string} [clientData.birth_date] - Data nascimento formato YYYY-MM-DD (opcional)
+ * @param {string} [clientData.sex] - Sexo: 'M', 'F', 'Other' (opcional)
+ * @param {number} [clientData.height_cm] - Altura em cm (opcional)
+ * @param {string} [clientData.objetive] - Objetivo (opcional)
+ * @param {string} [clientData.notes] - Notas (opcional)
+ * @param {string} [clientData.emergency_contact_name] - Nome contacto emergência (opcional)
+ * @param {string} [clientData.emergency_contact_phone] - Telefone contacto emergência (opcional)
  * @returns {Promise<Object>} Cliente criado
  */
 export const createClient = async (clientData) => {
@@ -39,13 +48,13 @@ export const createClient = async (clientData) => {
 /**
  * * Atualiza um cliente existente
  * @param {string} clientId - ID do cliente a ser atualizado
- * @param {Object} clientData - Dados do cliente a serem atualizados (mesmos campos de createClient)
+ * @param {Object} clientData - Campos a actualizar (apenas os que mudaram)
  * @returns {Promise<Object>} Cliente atualizado
  *
  */
 
 export const updateClient = async (clientId, clientData) => {
-  const response = await api.put(`/api/v1/clients/${clientId}`, clientData);
+  const response = await api.patch(`/api/v1/clients/${clientId}`, clientData);
   return response.data;
 };
 
@@ -54,7 +63,7 @@ export const updateClient = async (clientId, clientData) => {
  * @return {Promise<Object>} Cliente arquivado
  */
 export const archiveClient = async (clientId) => {
-  const response = await api.delete(`/api/v1/clients/${clientId}/archive`);
+  const response = await api.post(`/api/v1/clients/${clientId}/archive`);
   return response.data;
 };
 
@@ -63,7 +72,7 @@ export const archiveClient = async (clientId) => {
  * @return {Promise<Object>} Cliente reativado */
 
 export const unarchiveClient = async (clientId) => {
-  const response = await api.delete(`/api/v1/clients/${clientId}/unarchive`);
+  const response = await api.post(`/api/v1/clients/${clientId}/unarchive`);
   return response.data;
 };
 
